@@ -1,4 +1,37 @@
 # Better Promises
-Promise.any resolves with value of first successful promise, or rejects if all fail.
+Adds Promise.any and Promise.some functions.
 
-Promise.some resolves with values of successful promises, or rejects if all fail.
+Usage:
+```
+Promise.any([
+ new Promise(function(resolve) {
+  setTimeout(resolve, 100, "something")
+ }), Promise.reject()
+]).then(function(result) {
+ console.log(result)
+})
+  
+Promise.any([
+ new Promise(function(resolve, reject) {
+  setTimeout(reject, 100, "something")
+ }), Promise.reject("something")
+]).catch(function(errors) {
+ console.log(errors)
+})
+
+Promise.some([
+ new Promise(function(resolve) {
+  setTimeout(resolve, 100, "something")
+ }), Promise.reject("something")
+]).then(function({ results, errors }) {
+ console.log(results, errors)
+})
+
+Promise.some([
+ new Promise(function(resolve, reject) {
+  setTimeout(reject, 100, "something")
+ }), Promise.reject("something")
+]).catch(function(errors) {
+ console.log(errors)
+})
+```

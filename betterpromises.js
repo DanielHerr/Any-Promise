@@ -2,31 +2,38 @@
 
 Promise.any = function(promises = []) {
  return(new Promise(function(resolve, reject) {
-  let errors = [], promiseamount = 0
+  let errors = []
+  let totalpromises = 0
   for(let promise of promises) {
-   promiseamount = promises.length || promiseamount + 1
+   totalpromises = totalpromises + 1
    Promise.resolve(promise).then(resolve).catch(function(error) {
     errors.push(error)
-    if(errors.length == promiseamount) {
+    if(errors.length == totalpromises) {
      reject(errors)
 } }) } })) }
 
 Promise.some = function(promises = []) {
  return(new Promise(function(resolve, reject) {
-  let results = [], errors = [], promiseamount = 0
+  let totalpromises = 0
+  let totalresults = 0
+  let totalerrors = 0
+  let results = []
+  let errors = []
   for(let promise of promises) {
-   promiseamount = promises.length || promiseamount + 1
-   function checkfinish() {
-    if(results.length + errors.length == promiseamount) {
-     if(results.length) {
-      resolve(results)
-     } else {
-      reject(errors)
-   } } }
+   let currentpromise = totalpromises
+   totalpromises = totalpromises + 1
    Promise.resolve(promise).then(function(result) {
-    results.push(result)
-    checkfinish()
+    results[currentpromise] = result
+    errors[currentpromise] = undefined
+    totalresults = totalresults + 1
    }).catch(function(error) {
-    errors.push(error)
-    checkfinish()
-}) } })) }
+    results[currentpromise] = undefined
+    errors[currentpromise] = error
+    totalerrors = totalerrors + 1
+   }).then(function() {
+    if(totalresults + totalerrors == totalpromises) {
+     if(totalerrors == totalpromises) {
+      reject(errors)
+     } else {
+      resolve({ results, errors })
+} } }) } })) }

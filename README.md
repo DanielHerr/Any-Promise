@@ -35,3 +35,5 @@ Promise.some([
  console.log(errors)
 })
 ```
+
+<a href="https://danielherr.github.io/Better-Promises/tests.html">Run Tests</a>

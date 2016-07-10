@@ -35,5 +35,8 @@ Promise.some = function(promises = []) {
      if(totalerrors == totalpromises) {
       reject(errors)
      } else {
-      resolve({ results, errors })
+      let result = [ results, errors ]
+      result.results = results
+      result.errors = errors
+      resolve(result)
 } } }) } })) }
